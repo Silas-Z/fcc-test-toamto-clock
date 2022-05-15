@@ -1,59 +1,61 @@
 import React from "react";
 import './App.scss';
 
+
+
 const drumResource = [
   {
     id: 'Q',
-    keyCode: '00',
+    code: 'KeyQ',
     scr: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-1.mp3',
-    description: 'no description'
+    description: 'Q description'
   },
   {
     id: 'W',
-    keyCode: '00',
+    code: 'KeyW',
     scr: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-2.mp3',
-    description: 'no description'
+    description: 'W description'
   },
   {
     id: 'E',
-    keyCode: '00',
+    code: 'KeyE',
     scr: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-3.mp3',
-    description: 'no description'
+    description: 'E description'
   },
   {
     id: 'A',
-    keyCode: '00',
+    code: 'KeyA',
     scr: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-4_1.mp3',
-    description: 'no description'
+    description: 'A description'
   },
   {
     id: 'S',
-    keyCode: '00',
+    code: 'KeyS',
     scr: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-6.mp3',
-    description: 'no description'
+    description: 'S description'
   },
   {
     id: 'D',
-    keyCode: '00',
+    code: 'KeyD',
     scr: 'https://s3.amazonaws.com/freecodecamp/drums/Dsc_Oh.mp3',
-    description: 'no description'
+    description: 'D description'
   }, {
     id: 'Z',
-    keyCode: '00',
+    code: 'KeyZ',
     scr: 'https://s3.amazonaws.com/freecodecamp/drums/Kick_n_Hat.mp3',
-    description: 'no description'
+    description: 'Z description'
   },
   {
     id: 'X',
-    keyCode: '00',
+    code: 'KeyX',
     scr: 'https://s3.amazonaws.com/freecodecamp/drums/RP4_KICK_1.mp3',
-    description: 'no description'
+    description: 'X description'
   },
   {
     id: 'C',
-    keyCode: '00',
+    code: 'KeyC',
     scr: 'https://s3.amazonaws.com/freecodecamp/drums/Cev_H2.mp3',
-    description: 'no description'
+    description: 'C description'
   },
 ]
 
@@ -63,26 +65,63 @@ class DrumPad extends React.Component {
     this.state = {
       isPressed: false,
     }
-    this.handlePress = this.handlePress.bind(this)
+    this.handleOnClick = this.handleOnClick.bind(this)
+    this.handleOnKeyDown = this.handleOnKeyDown.bind(this)
+    this.changeIsPressed = this.changeIsPressed.bind(this)
     this.playSound = this.playSound.bind(this)
   }
-  handlePress(e) {
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleOnKeyDown)
+  }
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleOnKeyDown)
+  }
+  handleOnClick(e) {
+    this.changeIsPressed()
+
+    
+    this.props.setDisplay(e.target.id);
+    console.log(e.target)
+    this.playSound(e.target.firstElementChild.id);
+  }
+
+  handleOnKeyDown(e) {
+    let item = this.props.drumResource;
+    if (e.code == item.code) {
+      console.log(e)
+      this.changeIsPressed()
+      this.playSound(item.id);
+      // 处理 display 组件显示
+      this.props.setDisplay(item.description);
+
+    }
+
+  }
+
+  changeIsPressed() {
     this.setState({ isPressed: true })
     setTimeout(() => {
       this.setState({ isPressed: false })
     }, 100);
-    this.playSound(e);
   }
-  playSound (e){
-    const sound = e.target.firstElementChild;
+
+  playSound(e) {
+    const sound = document.getElementById(e);
     sound.currentTime = 0;
     sound.play();
 
   }
+
   render() {
     let item = this.props.drumResource;
+
     return (
-      <div className={this.state.isPressed ? "drum-pad press" : "drum-pad"} id={item.id.toLowerCase()} onClick={this.handlePress}>
+      <div
+        className={this.state.isPressed ? "drum-pad press" : "drum-pad"}
+        id={item.description}
+        onClick={this.handleOnClick}
+      >
+
         <audio className="clip" id={item.id} src={item.scr} ></audio>
         {item.id}
       </div>
@@ -98,14 +137,18 @@ class App extends React.Component {
     this.state = {
       display: 'Nothing'
     }
+    this.handleSetDisplay = this.handleSetDisplay.bind(this)
   }
-  handleClick() {
+  handleSetDisplay(e) {
+    this.setState({
+      display: e
+    })
 
   }
   render() {
     const drumPads = drumResource.map(
       item =>
-        <DrumPad drumResource={item} key={item.id}/>)
+        <DrumPad drumResource={item} key={item.id} setDisplay={this.handleSetDisplay} />)
     return (
       <div id="container">
         <div id="drum-machine">
