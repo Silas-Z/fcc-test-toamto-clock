@@ -1,0 +1,38 @@
+body {
+    padding: 0;
+    margin: 0;
+}
+#container {
+    background-color: rgb(234, 234, 234);
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#drum-machine {
+    display: flex;
+    flex-direction: row;
+    width: 640px;
+    height: 360px;
+    background-color: white;
+    border-radius: 20px;
+}
+
+#drum-area {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: red;
+    flex: 400px;
+    
+}
+.drum-pad {
+    flex: 100px;
+    background-color: black;
+    border-radius: 10px;
+    margin: 10px;
+}
+#review{
+    flex: 200px;
+}

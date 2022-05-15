@@ -1,4 +1,5 @@
 import React from "react";
+import './App.scss';
 
 function DrumPad() {
   return (
@@ -15,9 +16,19 @@ class App extends React.Component {
       <div id="container">
         <div id="drum-machine">
           <div id="drum-area">
+            {/* <DrumPad />
             <DrumPad />
+            <DrumPad />
+            <DrumPad />
+            <DrumPad />
+            <DrumPad />
+            <DrumPad />
+            <DrumPad />
+            <DrumPad /> */}
           </div>
-          <div id="display"></div>
+          <div id="display">
+            <div>This is</div>
+          </div>
         </div>
       </div>
     )
