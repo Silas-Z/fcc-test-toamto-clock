@@ -1,7 +1,8 @@
 import React from "react";
 import './App.scss';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { regular } from '@fortawesome/fontawesome-svg-core/import.macro' // <-- import styles to be used
+import { faSquareCaretUp, faSquareCaretDown} from '@fortawesome/free-solid-svg-icons'
 
 
 
@@ -24,16 +25,16 @@ class App extends React.Component {
           <div id="length-controller">
             <div id="break-area">
               <div id="break-label">Break Length</div>
-              <div id="break-decrement"></div>
+              <div id="break-decrement"><FontAwesomeIcon icon={faSquareCaretDown} /></div>
               <div id="break-length">{this.state.breakLength}</div>
-              <div id="break-increment"><FontAwesomeIcon icon="fa-regular fa-circle-chevron-up" /></div>
+              <div id="break-increment"><FontAwesomeIcon icon={faSquareCaretUp} /></div>
 
             </div>
             <div id="session-area">
               <div id="session-label">Session Length</div>
-              <div id="session-decrement"></div>
+              <div id="session-decrement"><FontAwesomeIcon icon={faSquareCaretDown} /></div>
               <div id="session-length">{this.state.sessionLength}</div>
-              <div id="session-increment"></div>
+              <div id="session-increment"><FontAwesomeIcon icon={faSquareCaretUp} /></div>
             </div>
 
           </div>
