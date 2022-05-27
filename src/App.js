@@ -4,12 +4,18 @@ import './App.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretLeft, faCaretRight, faPlay, faPause, faStop } from '@fortawesome/free-solid-svg-icons'
 
-const defaultBreakLength = 5;
-const defaultSetBreakLength = 5 * 60000;
-const defaultSessionLength = 25;
-const defaultSetSessionLength = 25 * 60000;
+const perMinute = 60000;
+const defaultBreakLength = 0.1;
+const defaultSetBreakLength = defaultBreakLength * perMinute;
+const defaultSessionLength = 0.2;
+const defaultSetSessionLength = defaultSessionLength * perMinute;
 
-const countDownInterval = 1;
+const countDownInterval = 100;
+
+const sound = document.getElementById('beep');
+
+
+
 
 
 class App extends React.Component {
@@ -40,7 +46,7 @@ class App extends React.Component {
 
   // 点击加减
   // 程序在进行 不允许操作
-  // 已经停止 判断 0 和 60，两组数值均进行调整 同时设置 length 和 set length，set length 等于 length * 60000
+  // 已经停止 判断 0 和 60，两组数值均进行调整 同时设置 length 和 set length，set length 等于 length * perMinute
 
 
   // 处理 开始
@@ -69,7 +75,7 @@ class App extends React.Component {
     }
     this.setState({
       breakLength: this.state.breakLength + 1,
-      setBreakLength: this.state.setBreakLength + 60000
+      setBreakLength: this.state.setBreakLength + perMinute
     })
 
   }
@@ -82,7 +88,7 @@ class App extends React.Component {
     }
     this.setState(({
       breakLength: this.state.breakLength - 1,
-      setBreakLength: this.state.setBreakLength - 60000
+      setBreakLength: this.state.setBreakLength - perMinute
     }))
   }
 
@@ -95,7 +101,7 @@ class App extends React.Component {
     }
     this.setState((state) => ({
       sessionLength: state.sessionLength + 1,
-      setSessionLength: state.setSessionLength + 60000
+      setSessionLength: state.setSessionLength + perMinute
     }))
   }
 
@@ -108,7 +114,7 @@ class App extends React.Component {
     }
     this.setState({
       sessionLength: this.state.sessionLength - 1,
-      setSessionLength: this.state.setSessionLength - 60000
+      setSessionLength: this.state.setSessionLength - perMinute
     });
   }
 
@@ -116,9 +122,20 @@ class App extends React.Component {
   //setting button end
 
   countDown() {
-    // let now = this.state.isBreaking ? this.state.setBreakLength : this.state.setSessionLength;
+    let now = this.state.isBreaking ? 'setBreakLength' : 'setSessionLength';
+    console.log('now', this.state[now])
+    if (this.state[now] === 0) {
+      this.setState(state => ({
+        isBreaking: !state.isBreaking,
+        setBreakLength: state.breakLength * perMinute,
+        setSessionLength: state.sessionLength * perMinute,
+      }));
+      // sound.currentTime = 0;
+      sound.play();
+      return
+    }
     this.setState({
-      setSessionLength: this.state.setSessionLength - 1000
+      [now]: this.state[now] - 1000
     })
 
   }
@@ -135,7 +152,7 @@ class App extends React.Component {
 
   }
   handlePause() {
-    console.log('click start', this.handlePause)
+    console.log('click pause', this.handlePause)
     clearInterval(this.timeId)
     this.setState({
       isStopped: false,
@@ -165,10 +182,11 @@ class App extends React.Component {
 
   render() {
     const { breakLength, sessionLength, isStopped, isPaused, isBreaking } = this.state;
-    let time = new Date(this.state.setSessionLength)
-    let timeDisplay = ('0'+time.getMinutes().toString()).slice(-2) +':'+('0'+time.getSeconds().toString()).slice(-2)
+    let now = this.state.isBreaking ? 'setBreakLength' : 'setSessionLength';
+    let time = new Date(this.state[now])
+    let timeDisplay = ('0' + time.getMinutes().toString()).slice(-2) + ':' + ('0' + time.getSeconds().toString()).slice(-2)
 
-    console.log('time', time, 'display', timeDisplay, typeof(timeDisplay))
+    // console.log('time', time, 'display', timeDisplay, typeof(timeDisplay))
     return (
       <div id="container">
         <div id="tomato">
@@ -194,12 +212,13 @@ class App extends React.Component {
 
           </div>
           <div id="time-display">
-            <div id="timer-label" className="label">Session</div>
+            <div id="timer-label" className="label">{isBreaking ? 'Break' : 'Session'}</div>
             <div id="time-left">{timeDisplay}</div>
+            <audio id="beep" src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"></audio>
           </div>
           <div id="time-controller">
-            {this.state.isStopped ? <div id="start_stop" className="circle-button" onClick={this.handleStart}> <FontAwesomeIcon icon={faPlay} /> </div> :
-              this.state.isPaused ? <div id="start_stop" className="circle-button" onClick={this.handleStart}><FontAwesomeIcon icon={faPlay} /> </div> :
+            {isStopped ? <div id="start_stop" className="circle-button" onClick={this.handleStart}> <FontAwesomeIcon icon={faPlay} /> </div> :
+              isPaused ? <div id="start_stop" className="circle-button" onClick={this.handleStart}><FontAwesomeIcon icon={faPlay} /> </div> :
                 <div id="start_stop" className="circle-button" onClick={this.handlePause}><FontAwesomeIcon icon={faPause} /></div>}
             <div id="reset" className="circle-button" onClick={this.handleStop}><FontAwesomeIcon icon={faStop} /></div>
 
