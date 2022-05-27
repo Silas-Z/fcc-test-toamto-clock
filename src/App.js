@@ -5,12 +5,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretLeft, faCaretRight, faPlay, faPause, faStop } from '@fortawesome/free-solid-svg-icons'
 
 const perMinute = 60000;
-const defaultBreakLength = 0.1;
+const defaultBreakLength = 5;
 const defaultSetBreakLength = defaultBreakLength * perMinute;
-const defaultSessionLength = 0.2;
+const defaultSessionLength = 25;
 const defaultSetSessionLength = defaultSessionLength * perMinute;
 
-const countDownInterval = 100;
+const countDownInterval = 1000;
 
 const sound = document.getElementById('beep');
 
